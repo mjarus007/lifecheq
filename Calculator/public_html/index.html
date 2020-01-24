@@ -24,6 +24,7 @@ and open the template in the editor.
         <script>
             var inputArray = [];
             var calc = false;
+            var downloadArray = [];
             
             //Add a call-back function for when the document is ready
             $(document).ready(
@@ -66,9 +67,6 @@ and open the template in the editor.
                         $("#downloadBtn").click( function(){
                             //Download the data from the server
                             
-                            //Display the progres bar
-                            modal("Wait", "Please be patient as the data downloads");
-                            
                             var xhttp = new XMLHttpRequest();
                             xhttp.onreadystatechange = function(){
                                 if (this.readyState == 4 && this.status == 200){
@@ -77,18 +75,15 @@ and open the template in the editor.
                                     
                                     //convert JSON text into array
                                     var jsonText = this.responseText;
-                                    var downloadArray = JSON.parse( jsonText);
+                                    downloadArray = JSON.parse( jsonText);
                                    
                                     //edit the option on select menu
-                                    modal("test", jsonText);
-                                    modal("test", downloadArray[0]["Name"]);
                                     $("#selectMenu").children().remove();
                                     
                                     $("#selectMenu").append("<option selected>Select a calculation from online:</option>");
                                     
                                     for( var i=0; i < downloadArray.length; i++){
-                                    $("#selectMenu").append("<option>" + downloadArray[i]["Name"]+" </option>");                                   
-                                    modal("test", downloadArray[i][0]);
+                                    $("#selectMenu").append("<option>" + downloadArray[i]["Name"]+" </option>");
                                 }
                                     
                                 }
@@ -99,6 +94,29 @@ and open the template in the editor.
                             xhttp.send("request=r");
                         }
                                 );
+                        
+                        $("#selectMenu").on( "change", function(event){
+                            //Change the calculation
+                            var arrSelect = [];
+                            var selected = $(this).val();
+                            
+                            for(var i =0; i < downloadArray.length; i++){
+                                if( downloadArray[i]["Name"] === selected){
+                                    arrSelect = downloadArray[i];
+                                }
+                            }
+                            var purchase = arrSelect["Purchase"];
+                            var deposit = arrSelect["Deposit"];
+                            var year = arrSelect["Year"];
+                            var rate = arrSelect["Rate"];
+                            
+                            $("#purchase").val( purchase);
+                            $("#deposit").val(deposit);
+                            $("#bond").val(year);
+                            $("#fixed").val(rate);
+                            
+                            $("#calculateBtn").click();
+                        });
                 
                     }
                     );
