@@ -16,8 +16,165 @@ and open the template in the editor.
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     </head>
     <body>
-        <div>
-            Testin the online repo...
+
+        <div class="jumbotron text-center" style="margin-bottom:0; background-color: #4ED1BA; color: white;">
+
+            <a class="navbar-brand" href="https://www.lifecheq.co.za/">
+                <img src ="http://lifecheq.co.za/assets/img/lifecheq.svg" alt="logo" style="width:300px;">
+            </a>
+            <h3 style="color:black;">
+                MORTGAGE CALCULATOR
+            </h3> 
         </div>
+
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <a class="navbar-brand" href="https://www.lifecheq.co.za/">
+                <img src ="http://lifecheq.co.za/assets/img/lifecheq.svg" alt="logo" style="width:120px;">
+            </a>
+        </nav>
+
+        <div class="container" style="margin-top:30px">
+            <div class="row">
+                <div class="col-sm-6">
+                    <form action=""  onsubmit="calculationSubmit();return false;" novalidate>
+                        <div class="form-group">
+                            <label for="purchase" >Purchase Price (R):</label>
+                            <input type="number" class="form-control" placeholder="Purchase Price" id="purchase" >
+                            <div class="text-danger hid" >Please enter a non-negative number</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="deposit">Deposit Paid (R):</label>
+                            <input type="number" class="form-control" placeholder="Deposit Paid" id="deposit" >
+                            <div class="text-danger hid">Please enter a non-negative number</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="bond">Bond Term (Years):</label>
+                            <input type="number" class="form-control" placeholder="Bond Term" id="bond" >
+                            <div class="text-danger hid">Please enter a positive integer</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="fixed">Fixed Interest Rate (%):</label>
+                            <input type="number" class="form-control" placeholder="Fixed Interest" id="fixed" >
+                            <div class="text-danger hid">Please enter a non-negative number</div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary float-right" id="calculateBtn">Calculate</button>
+
+                    </form>
+                    <div class="hid">Hidden Text</div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-group" style="margin-bottom: 40px;">
+                        <label for="calculationText">This is how much you pay monthly (R)</label>
+                        <input type="number" class="form-control text-center font-weight-bolder" id="calculationText" value="0.00">
+                    </div>
+
+                    <label for="moreInfoCard">More information about calculation:</label>
+                    <div id="extraInfo" style="margin-bottom:20px;">            
+
+
+                        <div class="card" id="moreInfoCard">
+                            <div class="card-header">
+                                <a class="card-link" data-toggle="collapse" href="#tableCollapse">Interest and Capital as percentage of total paid annually</a>
+                            </div>
+                            <div class= "collapse" id="tableCollapse">
+                                <div  style="height:250px;overflow-y: auto;" id="table">
+                                    <table class="table table-bordered" style="margin:0;">
+                                        <thead>
+                                            <tr>
+                                                <td>Year</td>
+                                                <td>Interest (%)</td>
+                                                <td>Capital (%)</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="card">
+                            <div class="card-header">
+                                <a class="card-link collapsed" data-toggle="collapse" href="#stackBarCollapse">Stacked graph of interest and capital as a percentage of total paid annually</a>
+                            </div>
+                            <div class="collapse" id="stackBarCollapse">
+                                <div class="card-body" style="padding:0;" >
+                                    <div style="padding:50% 0 0;width:100%;position: relative;background-color: pink;" id="stackBarContainer">
+                                        <div id="stackBar" style="position: absolute;left:0;right:0;top: 0;bottom: 0;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="saveName">Enter a name to save this calculation as:</label>
+                        <div class="row" style="margin:0;">
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="Calculation Name" id="saveName"> 
+                            </div>
+                            <div>
+                                <button class="btn btn-success" id="saveBtn">Save Online</button>
+                            </div>
+                        </div>
+                        <div class="hid">Hidden Text</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="selectMenu">
+                            Select a calculation from online:
+                        </label>
+                        <select name="calculations" class="custom-select" id="selectMenu">
+                            <option selected>
+                                Select online calculation...   
+                            </option>
+                        </select>
+                        <div class="hid">Hidden Text</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- The modal-->
+            <div class="modal fade" id="modal">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="modalTitle">
+                                Modal Title
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+
+                        </div>
+
+                        <div class="modal-body" id="modalBody">
+                            Modal Body
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">OK</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="jumbotron text-center" style="margin-bottom:0;background-color: #4ED1BA;margin-top: 50px;">
+            <h5>Thank you for using our services</h5>
+        </div>
+
     </body>
 </html>
