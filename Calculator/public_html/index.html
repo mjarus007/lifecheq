@@ -32,7 +32,7 @@ and open the template in the editor.
                         google.charts.load('current', {packages: ['corechart']});
                         
                         //Add listener for save online button
-                        $("#saveBtn").click(function () {
+                        $("#saveBtn").click( function () {
                             //Add name to array
                             var saveName = $("#saveName").val();
                             if (saveName) {
@@ -62,6 +62,26 @@ and open the template in the editor.
                             }
                         }
                         );
+                
+                        $("#downloadBtn").click( function(){
+                            //Download the data from the server
+                            
+                            //Display the progres bar
+                            modal("Wait", "Please be patient as the data downloads");
+                            
+                            var xhttp = new XMLHttpRequest();
+                            xhttp.onreadystatechange = function(){
+                                if (this.readyState == 4 && this.status == 200){
+                                    //Remove the progress bar
+                                    modal("Success", "New calculation is ready");
+                                }
+                            };
+                            
+                            xhttp.open("POST", "https://mcalculator.000webhostapp.com/on.php", true);
+                            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                            xhttp.send("request=r");
+                        }
+                                );
                 
                     }
                     );
@@ -363,12 +383,19 @@ and open the template in the editor.
                         <label for="selectMenu">
                             Select a calculation from online:
                         </label>
+                        <div class="row">
+                            <div class="col">
                         <select name="calculations" class="custom-select" id="selectMenu">
                             <option selected>
                                 Select online calculation...   
                             </option>
                         </select>
                         <div class="hid">Hidden Text</div>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary" id="downloadBtn">Refresh</button>
+                            </div>
+                    </div>
                     </div>
 
                 </div>

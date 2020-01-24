@@ -2,6 +2,7 @@
 
 //
 $input = $_REQUEST["save"];
+$request = $_REQUEST["request"];
 
 $calcArray = json_decode( $input, true);
 
@@ -13,8 +14,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $deposit = $calcArray[2];
     $year = $calcArray[3];
     $rate = $calcArray[4];
-    
-    echo "name: $name, $purchase, $deposit, $year, $rate";
     
     //Make Database connection
     $servername = "localhost";
