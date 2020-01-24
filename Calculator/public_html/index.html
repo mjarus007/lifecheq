@@ -21,6 +21,197 @@ and open the template in the editor.
             }
         </style>
         
+        <script>
+            var inputArray = [];
+            var calc = false;
+            
+            //Add a call-back function for when the document is ready
+            $(document).ready(
+                    function(){
+                        //When the document is ready load the Google current version of Google Charts.
+                        google.charts.load('current', {packages: ['corechart']});
+                    }
+                    );
+            
+            //Display the modal with the given title and content
+            function modal(title, content) {
+                $("#modalTitle").text(title);
+                $("#modalBody").text(content);
+
+                $("#modal").modal("show");
+            }
+            
+            //Data validation: check whether non-negative number entered.
+            function valid(input) {
+                if (!isNaN(input)) {
+                    var number = parseFloat(input);
+                    if (number >= 0) {
+                        return true
+                    }
+                }
+                return false;
+            }
+            
+            //Display the graph using the Google Chart API
+            function displayGraph(P, year, r) {
+
+                //Initial variables for graph
+                var c = calculateMonthly(P, year, r);
+                var interest = 0, paid = 0, capital = 0, interestPerc = 0, capitalPerc = 0;
+                var dataArray = [["Year", "Interest", "Capital"]];
+
+                //Populate the data array
+                for (var i = 1; i <= year; i++) {
+
+                    interest = calculateInterest(P, i, r, c);
+                    paid = c * i * 12;
+                    capital = paid - interest;
+
+                    interestPerc = Math.round((interest * 100) / paid);
+                    capitalPerc = Math.round((capital * 100) / paid);
+
+                    dataArray.push([i, interestPerc, capitalPerc]);
+                    ;
+                }
+
+                var data = google.visualization.arrayToDataTable(dataArray);
+                var width = $("#stackBarContainer").width();
+                var height = $("#stackBarContainer").css("padding-top").slice(0, -2);
+
+                var options = {width: width,
+                    height: height,
+                    legend: {position: 'top', maxLines: 3},
+                    bar: {groupWidth: '75%'},
+                    isStacked: true,
+                    chartArea: {width: width - 30, height: height - 30, left: 25, top: 25}
+                };
+
+                //draw the graph
+                var view = new google.visualization.DataView(data);
+                var chart = new google.visualization.BarChart(document.getElementById("stackBar"));
+                chart.draw(view, options);
+            }
+            
+            //Display the table given the amount paid, year and monthly interest rate
+            function displayTable(P, year, r) {
+
+                var c = calculateMonthly(P, year, r);
+
+                //Reset the table
+                $("#tableBody").children().remove();
+
+                var interest = 0, paid = 0, capital = 0, interestPerc = 0, capitalPerc = 0;
+
+                for (var i = 1; i <= year; i++) {
+
+                    interest = calculateInterest(P, i, r, c);
+                    paid = c * i * 12;
+                    capital = paid - interest;
+
+                    interestPerc = Math.round((interest * 100) / paid);
+                    capitalPerc = Math.round((capital * 100) / paid);
+
+                    $("#tableBody").append(" <tr><td>" + i + "</td><td>" + interestPerc + "</td><td>" + capitalPerc + "</td></tr>");
+                }
+            }
+            
+            //Calculate the interest given the amount paid, year of payment and interest monthly interest rate
+            function calculateInterest(P, year, r, c) {
+                var N = year * 12;
+                var interest = 0;
+                if (r !== 0) {
+                    interest = ((P * r - c) * (Math.pow(1 + r, N) - 1)) / r + c * N;
+                }
+                return interest;
+            }
+            
+            //Make mortgage calculation
+            function calculateMonthly(P, year, r) {
+
+                //Convert the term in years to bond term in months
+                var N = year * 12;
+
+                //Variable to stor the monthly payments
+                var c = 0;
+
+
+
+                if (r === 0) {
+                    if (N !== 0) {
+                        c = P / N;
+                    } else {
+                        c = P;
+                    }
+                } else {
+                    c = (r * P) / (1 - Math.pow(1 + r, -1 * N));
+                }
+                //round the number off to two decimal points
+                c = Math.round(c * 100) / 100;
+                return c;
+            }
+            
+            //Display the calculation
+            function displayCalculation(P, year, r) {
+
+                var c = calculateMonthly(P, year, r);
+
+                $("#calculationText").val(c);
+
+            }
+            
+            //For data validation and displaying the error messages\ calculation
+            function calculationSubmit() {
+                //Calculate the annaul payments using formula from Wikipedia
+                var purchase = $("#purchase").val();
+                var deposit = $("#deposit").val();
+                var year = $("#bond").val();
+                var r = $("#fixed").val();
+                var P = 0;
+
+                //Rest the error messages
+                $("#purchase").next().css("visibility", "hidden");
+                $("#deposit").next().css("visibility", "hidden");
+                $("#bond").next().css("visibility", "hidden");
+                $("#fixed").next().css("visibility", "hidden");
+
+                //Validate input
+                if (!valid(purchase)) {
+                    $("#purchase").next().css("visibility", "visible");
+                } else if (!valid(deposit)) {
+                    $("#deposit").next().css("visibility", "visible");
+                } else if (!valid(year)) {
+                    $("#bond").next().css("visibility", "visible");
+                } else if (!valid(r)) {
+                    $("#fixed").next().css("visibility", "visible");
+                } else {
+
+                    //Save to global array
+                    inputArray = ["", purchase, deposit, year, r];
+
+                    //Convert annual fixed rate expressed in percentage into monthly fixed rate expressed in decimals
+                    r = r / 100
+                    r = r / 12;
+
+                    //Ensure that year is an integer
+                    year = Math.floor(year);
+
+                    P = purchase - deposit;
+
+                    $("#tableCollapse").addClass("show");
+                    $("#stackBarCollapse").addClass("show");
+
+                    displayCalculation(P, year, r);
+                    displayTable(P, year, r);
+                    displayGraph(P, year, r);
+
+                    calc = true;
+
+                }
+
+
+
+            }
+            </script>
         
     </head>
     <body>
