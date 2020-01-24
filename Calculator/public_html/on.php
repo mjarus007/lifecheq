@@ -1,8 +1,15 @@
 <?php
 
-//
+$input = "";
+$request = "";
+
+if( isset( $_REQUEST["save"] )){
 $input = $_REQUEST["save"];
+}
+
+if( isset( $_REQUEST["request"])){
 $request = $_REQUEST["request"];
+}
 
 $calcArray = json_decode( $input, true);
 
@@ -28,6 +35,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         echo $conn->connect_error;
     }
     
+    if($input){
+    //If the user wants to save the calculation data on DB
+    
     //Create SQL Query
     $sql = "INSERT INTO Calcs (name, purchase, deposit, year, rate) VALUES ('$name', '$purchase', '$deposit', '$year', '$rate')";
 
@@ -37,6 +47,31 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     } else{
         echo "Execution unsuccessful";
     }
+    }
+    
+    if( $request){
+        //If user wants to download DB data
+        
+        //Create SQL Query
+        $sql = "SELECT * FROM Calcs";
+
+        //Perfrom SQL Query on Database
+        $result = $conn->query($sql);
+        
+        $returnArray = [];
+        
+       while($row =  $result->fetch_assoc()){
+           array_push($returnArray, $row ) ;
+        }
+        
+        $jsonText = json_encode($returnArray);
+        
+        echo $jsonText;
+        
+    }
+    
+    //Close the database connection
+    $conn->close();
     
 }
 

@@ -73,7 +73,24 @@ and open the template in the editor.
                             xhttp.onreadystatechange = function(){
                                 if (this.readyState == 4 && this.status == 200){
                                     //Remove the progress bar
-                                    modal("Success", "New calculation is ready");
+                                    //modal("Success", "New calculation is ready");
+                                    
+                                    //convert JSON text into array
+                                    var jsonText = this.responseText;
+                                    var downloadArray = JSON.parse( jsonText);
+                                   
+                                    //edit the option on select menu
+                                    modal("test", jsonText);
+                                    modal("test", downloadArray[0]["Name"]);
+                                    $("#selectMenu").children().remove();
+                                    
+                                    $("#selectMenu").append("<option selected>Select a calculation from online:</option>");
+                                    
+                                    for( var i=0; i < downloadArray.length; i++){
+                                    $("#selectMenu").append("<option>" + downloadArray[i]["Name"]+" </option>");                                   
+                                    modal("test", downloadArray[i][0]);
+                                }
+                                    
                                 }
                             };
                             
