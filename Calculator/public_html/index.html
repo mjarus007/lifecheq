@@ -30,6 +30,39 @@ and open the template in the editor.
                     function(){
                         //When the document is ready load the Google current version of Google Charts.
                         google.charts.load('current', {packages: ['corechart']});
+                        
+                        //Add listener for save online button
+                        $("#saveBtn").click(function () {
+                            //Add name to array
+                            var saveName = $("#saveName").val();
+                            if (saveName) {
+                                if (calc) {
+                                    inputArray[0] = saveName;
+
+                                    //Convert array containing calculation information to JSON string
+                                    var JSONtext = JSON.stringify(inputArray);
+
+                                    //Send JSON string with AJAX
+                                    var xhttp = new XMLHttpRequest();
+                                    xhttp.onreadystatechange = function () {
+                                        if (this.readyState == 4 && this.status == 200) {
+                                            //Save successful
+                                            modal("Saved", "The calculation was successfully saved");
+                                        }
+                                    };
+                                    
+                                    xhttp.open("POST", "https://mcalculator.000webhostapp.com/on.php", true);
+                                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                                    xhttp.send("save=" + JSONtext);
+                                } else {
+                                    modal("Invalid", "Please make a calculation and try again.")
+                                }
+                            } else {
+                                modal("Empty Name", "Please enter a name for calculation");
+                            }
+                        }
+                        );
+                
                     }
                     );
             
