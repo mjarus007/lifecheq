@@ -16,6 +16,7 @@ $calcArray = json_decode( $input, true);
 That's great!
 Just like Java*/
 
+//This is the cool feature that I added from the cool-feature branch
 
 //Check whether this is from a POST request
 if($_SERVER["REQUEST_METHOD"] == "POST"){
