@@ -12,6 +12,9 @@ $request = $_REQUEST["request"];
 }
 
 $calcArray = json_decode( $input, true);
+/*Hey comments can be blocks on PHP?
+That's great!
+Just like Java*/
 
 
 //Check whether this is from a POST request
