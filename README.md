@@ -1,3 +1,3 @@
 # lifecheq
 An online Mortgage Calculator 
-This is calculate the mortgage accurate up to two decimals points.
+This is to calculate the mortgage accurate up to two decimals points.
